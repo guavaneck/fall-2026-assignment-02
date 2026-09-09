@@ -1,4 +1,4 @@
-# Assignment 2: Teamwork Git and Vitest Testing - Personal Finance CLI Auditor
+# Assignment 2: Teamwork Git & Vitest Testing - Personal Finance CLI Auditor
 
 Welcome to Assignment 2! In this assignment, you will work in a team of **up to 5 students** to build a command-line interface (CLI) application named the **Personal Finance Transaction Auditor**.
 
