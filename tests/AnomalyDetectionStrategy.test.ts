@@ -17,10 +17,10 @@ describe('AnomalyDetectionStrategy (Feature 2)', () => {
   //   const mockRules = { maxTransactionAmount: 500.00, flaggedStatuses: ['flagged'] };
   //   const spy = vi.spyOn(AnomalyRulesService, 'getRules').mockResolvedValue(mockRules);
   //
-  //   const testTransactions: Transaction[] = [
-  //     { id: '1', date: '2026-05-01', amount: -600.00, category: 'Shopping', description: 'Laptop', status: 'completed' }, // Outlier
-  //     { id: '2', date: '2026-05-02', amount: -100.00, category: 'Food', description: 'Grocery', status: 'completed' }, // Normal
-  //   ];
+    const testTransactions: Transaction[] = [
+       { id: '1', date: '2026-05-01', amount: -600.00, category: 'Shopping', description: 'Laptop', status: 'completed' }, // Outlier
+       { id: '2', date: '2026-05-02', amount: -100.00, category: 'Food', description: 'Grocery', status: 'completed' }, // Normal
+     ];
   //
   //   const result = await strategy.execute(testTransactions);
   //
@@ -29,9 +29,17 @@ describe('AnomalyDetectionStrategy (Feature 2)', () => {
   //   expect(result).toContain('Outlier');
   // });
 
-  it.todo(
-    'should detect outlier transactions exceeding the configured max amount limit',
-  );
+
+it('should detect outlier transactions exceeding threshold', async () => {
+  const mockRules = { maxTransactionAmount: 500.00, flaggedStatuses: ['flagged'] };
+  const spy = vi.spyOn(AnomalyRulesService, 'getRules').mockResolvedValue(mockRules);
+
+  const result = await strategy.execute(testTransactions);
+
+  expect(spy).toHaveBeenCalled();
+  expect(result).toContain('Laptop');   // the outlier shows up
+  expect(result).not.toContain('Grocery'); // the normal one doesn't
+});
 
   it.todo(
     'should identify duplicate transactions sharing identical date, amount, category, and description',
