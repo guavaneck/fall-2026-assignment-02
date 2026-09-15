@@ -35,7 +35,8 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
 
     //Anomaly
     const anomalyCount = outliers.length + duplicateCount + flagged.length;
-    const anomalyRate = (anomalyCount / transactions.length) * 100;
+    const anomalyRate = transactions.length ? (anomalyCount / transactions.length) * 100 : 0;
+
 
     //Report
     const line = (t: Transaction) => `- ${t.date} | ${t.category} | ${t.description} | $${t.amount.toFixed(2)}`;
@@ -46,7 +47,7 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
       `Outliers (over $${rules.maxTransactionAmount}):`,
       outliers.map(line).join('\n') || '(None)',
       '',
-      'Duplicate TRansactions:',
+      'Duplicate Transactions:',
       duplicateSets.map((g, i) => `  Set ${i + 1}:\n` + g.map(line).join('\n')).join('\n') || '  (none)',
       '',
       'Flagged Transactions:',
@@ -54,8 +55,8 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
       '',
       `Total Transactions: ${transactions.length}`,
       `Total Anomalies: ${anomalyCount}`,
-      `Anomaly Rate: ${anomalyRate.toFixed(2)}%`,
-      `Total Flagged Value: ${flaggedTotal}`,
+      `Anomaly Rate: ${anomalyRate}%`,
+      `Total Flagged Value: $${flaggedTotal.toFixed(2)}`,
 
     ].join('\n');
     
