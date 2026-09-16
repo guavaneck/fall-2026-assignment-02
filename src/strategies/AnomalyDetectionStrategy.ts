@@ -21,7 +21,7 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
     // Duplicates
     const duplicateMap = new Map<string, Transaction[]>();
     for (const t of transactions) {
-      const key = `${t.date}|${t.category}|${t.description}|${t.amount}`;t
+      const key = `${t.date}|${t.category}|${t.description}|${t.amount}`;
       const duplicate = duplicateMap.get(key) ?? [];
       duplicate.push(t);
       duplicateMap.set(key, duplicate);
@@ -34,7 +34,14 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
     const flaggedTotal = flagged.reduce((total, transaction) => total + transaction.amount, 0);
 
     //Anomaly
-    const anomalyCount = outliers.length + duplicateCount + flagged.length;
+    //Set to track unique anomalies using Transaction IDs to avoid double counting
+    const anomalousIds = new Set<string>();
+    for (const t of outliers) anomalousIds.add(t.id);
+    for (const set of duplicateSets) for (const t of set) anomalousIds.add(t.id);
+    for (const t of flagged) anomalousIds.add(t.id);
+
+    
+    const anomalyCount = anomalousIds.size;
     const anomalyRate = transactions.length ? (anomalyCount / transactions.length) * 100 : 0;
 
 
@@ -55,7 +62,7 @@ export class AnomalyDetectionStrategy implements AuditStrategy {
       '',
       `Total Transactions: ${transactions.length}`,
       `Total Anomalies: ${anomalyCount}`,
-      `Anomaly Rate: ${anomalyRate}%`,
+      `Anomaly Rate: ${anomalyRate.toFixed(2)}%`,
       `Total Flagged Value: $${flaggedTotal.toFixed(2)}`,
 
     ].join('\n');

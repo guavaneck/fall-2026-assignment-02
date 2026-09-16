@@ -37,7 +37,10 @@ describe('AnomalyDetectionStrategy (Feature 2)', () => {
 
       // Flagged by status
       { id: '10', date: '2026-05-05', amount: -50.0, category: 'Misc', description: 'Unknown Charge', status: 'flagged' },
-      { id: '11', date: '2026-05-05', amount: -75.0, category: 'Misc', description: 'Gift Card', status: 'flagged' },
+      { id: '11', date: '2026-05-05', amount: 75.0, category: 'Misc', description: 'Gift Card', status: 'flagged' },
+
+      //Multiple anomalies in one transaction
+      { id: '12', date: '2026-05-06', amount: -1000.0, category: 'Shopping', description: 'TV', status: 'flagged' }, // Outlier + Flagged
     ];
   
   //
@@ -90,8 +93,8 @@ it('should detect outlier transactions exceeding threshold', async () => {
       const result = await strategy.execute(testTransactions);
       
       // Assuming the report includes these metrics in a specific format
-      expect(result).toContain('Anomaly Rate: 90%'); // Example expected output
-      expect(result).toContain('Total Flagged Value: $-125'); // Example expected output
+      expect(result).toContain('Anomaly Rate: 90.91%'); // Example expected output
+      expect(result).toContain('Total Flagged Value: $-975.00'); // Example expected output
     }
   );
 
@@ -116,7 +119,8 @@ it('should detect outlier transactions exceeding threshold', async () => {
 
     expect(result).toContain('Total Transactions: 0');
     expect(result).toContain('Total Anomalies: 0');
-    expect(result).toContain('Anomaly Rate: 0%');
+    expect(result).toContain('Anomaly Rate: 0.00%');
   }
   );
+
 });
